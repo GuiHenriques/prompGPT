@@ -5,14 +5,13 @@ import { useState, useEffect } from "react";
 import { signIn, signOut } from "next-auth/react";
 import { useSession, getProviders } from "next-auth/react";
 import { ClientSafeProvider, LiteralUnion } from "next-auth/react";
-import { set } from "mongoose";
 
 interface ProvidersState {
     [key: string]: ClientSafeProvider;
 }
 
 const Nav = () => {
-    const isUserLoggedIn = true;
+    const {data : session} = useSession();
 
     const [providers, setProviders] = useState({} as ProvidersState | null);
     const [toggleDropdown, setToggleDropdown] = useState(false);
@@ -20,10 +19,10 @@ const Nav = () => {
         const fetchProviders = async () => {
             const response = await getProviders();
             setProviders(response);
-            fetchProviders();
         };
+        fetchProviders();
     }, []);
-
+    
     return (
         <nav className="w-full flex-between mb-16 pt-3">
             <Link className="flex-center gap-2" href="/">
@@ -38,7 +37,7 @@ const Nav = () => {
             </Link>
             {/* Desktop */}
             <div className="sm:flex hidden">
-                {isUserLoggedIn ? (
+                {session ? (
                     <div className="flex gap-3 md:gap-5">
                         <Link href="/create-prompt" className="black_btn">
                             Create Post
@@ -53,7 +52,7 @@ const Nav = () => {
                             Sign Out
                         </button>
                         <Image
-                            src="/images/logo.svg"
+                            src={session.user?.image ?? "images/logo.svg"}
                             width={37}
                             height={37}
                             alt="profile"
@@ -78,10 +77,10 @@ const Nav = () => {
             </div>
             {/* Mobile */}
             <div className="flex sm:hidden relative">
-                {isUserLoggedIn ? (
+                {session ? (
                     <div className="flex">
                         <Image
-                            src="/icons/menu.svg"
+                            src={session.user?.image ?? "images/logo.svg"}
                             width={37}
                             height={37}
                             alt="profile"
