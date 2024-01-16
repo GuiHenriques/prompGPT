@@ -13,12 +13,12 @@ const handler = NextAuth({
     ],
     callbacks: {
         async session({ session }) {
+
+            await connectToDB();
             const sessionUser = await User.findOne({
                 email: session.user?.email,
             });
-            // console.log("sessionUser", sessionUser)
-            // console.log("session", session)
-            const activeUserId = sessionUser._id.toString(); // export active user id separately
+            const activeUserId = sessionUser._id.toString();
             return session;
         },
         
@@ -27,7 +27,6 @@ const handler = NextAuth({
         }: {
             profile?: { email?: string; name?: string; picture?: string };
         }) {
-            // console.log("profile", profile);
             try {
                 await connectToDB();
 
@@ -35,8 +34,6 @@ const handler = NextAuth({
                 const userExists = await User.findOne({
                     email: profile?.email,
                 });
-                
-                // console.log("userExists", userExists);
                 
                 // if not, create user
                 if (!userExists) {
@@ -48,7 +45,6 @@ const handler = NextAuth({
                         image: profile?.picture,
                         
                     });
-                    console.log("user created");
                 }
                 return true;
 
