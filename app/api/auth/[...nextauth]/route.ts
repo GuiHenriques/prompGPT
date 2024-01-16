@@ -4,6 +4,8 @@ import GoogleProvider from "next-auth/providers/google";
 import { connectToDB } from "@/utils/database";
 import User from "@/models/user";
 
+let isDBConnected = false;
+
 const handler = NextAuth({
     providers: [
         GoogleProvider({
@@ -13,12 +15,10 @@ const handler = NextAuth({
     ],
     callbacks: {
         async session({ session }) {
-            console.log("callback session", session)
-            await connectToDB();
+            await connectToDBOnce();
             const sessionUser = await User.findOne({
                 email: session.user.email,
             });
-            console.log(sessionUser)
             session.user.id = sessionUser._id.toString();
             
             return session;
@@ -57,5 +57,12 @@ const handler = NextAuth({
         },
     },
 });
+
+async function connectToDBOnce() {
+    if (!isDBConnected) {
+        await connectToDB();
+        isDBConnected = true;
+    }
+}
 
 export {handler as GET, handler as POST};

@@ -1,12 +1,13 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import { connectToDB } from "@/utils/database";
 import Prompt from "@/models/prompt";
 
-export default async function handler(  
-    request: NextApiRequest,
-    response: NextApiResponse
+export async function POST(  
+    request: NextRequest,
+    response: NextResponse
 ) {
-    const { prompt, tag, userId } = request.body;
+    const { prompt, tag, userId } = await request.json();
+    
     try {
         await connectToDB();
         const newPrompt = new Prompt({
@@ -15,8 +16,9 @@ export default async function handler(
             tag: tag,
         });
         await newPrompt.save();
-        response.status(201).json(newPrompt);
+
+        return new Response(JSON.stringify(newPrompt), {status: 201})
     } catch (error) {
-        respose.status(500).json({ error: error }
+        return new Response("Failed to create prompt", {status: 500})
     }
 }
