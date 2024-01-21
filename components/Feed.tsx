@@ -2,33 +2,40 @@
 
 import { useState, useEffect } from "react";
 import PromptCard from "./PromptCard";
+import Post from "@/types/post";
 
-type PromptCardListProps = {
-    data: { prompt: string; tag: string }[];
-    handleTagClick: () => void;
+interface PromptCardListProps {
+    posts: Post[];
+    handleTagClick: (tag: string) => void;
 }
-const PromptCarList = ({data, handleTagClick}: PromptCardListProps) => {
-  
-  return (
-    <div className="mt-16 prompt_layout">
-      {data.map((prompt, index) => (<PromptCard key={index} />))}
-    </div>
-  )  
-}
+
+const PromptCardList = ({ posts, handleTagClick }: PromptCardListProps) => {
+    return (
+        <div className="mt-16 prompt_layout">
+            {posts.map((post) => (
+                <PromptCard
+                    key={post._id}
+                    post={post}
+                    handleTagClick={handleTagClick}
+                />
+            ))}
+        </div>
+    );
+};
 
 const Feed = () => {
     const [searchText, setSearchText] = useState("");
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {};
-    const [prompts, setPrompts] = useState([{ prompt: "", tag: "" }]);
-    
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {};
+    const [posts, setPosts] = useState([]);
+
     useEffect(() => {
-      const fetchPrompts = async () => {
-      const res = await fetch("/api/prompt");
-      const data = await res.json();
-      setPrompts(data);
-      }
-      fetchPrompts()
-    }, [])
+        const fetchPosts = async () => {
+            const res = await fetch("/api/prompt");
+            const data = await res.json();
+            setPosts(data);
+        };
+        fetchPosts();
+    }, []);
 
     return (
         <section className="feed">
@@ -37,12 +44,12 @@ const Feed = () => {
                     type="text"
                     placeholder="Search for prompts, usernames or tags"
                     value={searchText}
-                    onChange={handleChange}
+                    onChange={handleSearchChange}
                     required
                     className="search_input peer"
                 />
             </form>
-            <PromptCarList data={prompts} handleTagClick={() => {}} />
+            <PromptCardList posts={posts} handleTagClick={() => {}} />
         </section>
     );
 };

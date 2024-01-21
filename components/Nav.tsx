@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { signIn, signOut } from "next-auth/react";
 import { useSession, getProviders } from "next-auth/react";
-import { ClientSafeProvider, LiteralUnion } from "next-auth/react";
+import { ClientSafeProvider } from "next-auth/react";
 
 interface ProvidersState {
     [key: string]: ClientSafeProvider;
@@ -51,13 +51,15 @@ const Nav = () => {
                         >
                             Sign Out
                         </button>
-                        <Image
-                            src={session.user?.image ?? "images/logo.svg"}
-                            width={37}
-                            height={37}
-                            alt="profile"
-                            className="rounded-full"
-                        ></Image>
+                        <Link href="/profile">
+                            <Image
+                                src={session.user?.image ?? "images/logo.svg"}
+                                width={37}
+                                height={37}
+                                alt="profile"
+                                className="rounded-full"
+                            />
+                        </Link>
                     </div>
                 ) : (
                     <div className="flex gap-3 md:gap-5">

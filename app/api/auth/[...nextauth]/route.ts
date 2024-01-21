@@ -20,10 +20,10 @@ const handler = NextAuth({
                 email: session.user.email,
             });
             session.user.id = sessionUser._id.toString();
-            
+
             return session;
         },
-        
+
         async signIn({
             profile,
         }: {
@@ -36,20 +36,16 @@ const handler = NextAuth({
                 const userExists = await User.findOne({
                     email: profile?.email,
                 });
-                
+
                 // if not, create user
                 if (!userExists) {
                     User.create({
                         email: profile?.email,
-                        username: profile?.name
-                            ?.replace(" ", "")
-                            .toLowerCase(),
+                        username: profile?.name?.replace(" ", "").toLowerCase(),
                         image: profile?.picture,
-                        
                     });
                 }
                 return true;
-
             } catch (error) {
                 console.error(error);
                 return false;
@@ -65,4 +61,4 @@ async function connectToDBOnce() {
     }
 }
 
-export {handler as GET, handler as POST};
+export { handler as GET, handler as POST };

@@ -1,0 +1,16 @@
+[
+    {
+        "_id": "65a6ede697d983be7273c679",
+        "creator": "65a574f84940f0ee59d0aa73",
+        "prompt": "Prompt 1",
+        "tag": "#tag1",
+        "__v": 0
+    },
+    {
+        "_id": "65a7d7208f0de1ede655cb95",
+        "creator": "65a574f84940f0ee59d0aa73",
+        "prompt": "You are a professional web developer, and I'm going to provide you with a snippet of code. You can give me advice on how to make it cleaner, more readable, and more efficient",
+        "tag": "#code",
+        "__v": 0
+    }
+]
