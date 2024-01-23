@@ -7,7 +7,7 @@ import Post from "@/types/post";
 import Profile from "@/components/Profile";
 
 const ProfilePage = () => {
-    const { data: session } = useSession()
+    const { data: session } = useSession();
     const router = useRouter();
     const [posts, setPosts] = useState([]);
 
@@ -23,12 +23,27 @@ const ProfilePage = () => {
         };
         if (session?.user.id) fetchPosts();
     }, [session?.user.id]);
-    
+
     const handleEdit = async (post: Post) => {
-        // router.push(`/edit?id=${post._id}`)
+        router.push(`/edit?id=${post._id}`);
     };
-    const handleDelete = (post: Post) => {
-        // router.push(`/delete?id=${post._id}`)
+    const handleDelete = async (post: Post) => {
+        const hasConfirmed = confirm(
+            "Are you sure you want to delete this post?"
+        );
+        if (hasConfirmed) {
+            try {
+                await fetch(`/api/prompt/${post._id}`, {
+                    method: "DELETE",
+                });
+                const filteredPosts = posts.filter(
+                    (p: Post) => p._id !== post._id
+                );
+                setPosts(filteredPosts);
+            } catch (error) {
+                console.error(error);
+            }
+        }
     };
 
     return (

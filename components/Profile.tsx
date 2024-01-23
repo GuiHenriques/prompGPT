@@ -16,14 +16,18 @@ const Profile = (props: ProfileProps) => {
                 <span className="blue_gradient">{props.name} Profile</span>
             </h1>
             <p className="desc text-left">{props.desc}</p>
-            <div className='mt-10 prompt_layout'>
+            <div className="mt-10 prompt_layout">
                 {props.posts.map((post) => (
-                <PromptCard
-                    key={post._id}
-                    post={post}
-                    handleEdit={() => props.handleEdit && props.handleEdit(post)}
-                    handleDelete={() => props.handleDelete && props.handleDelete(post)}
-                />
+                    <PromptCard
+                        key={post._id}
+                        post={post}
+                        handleEdit={() =>
+                            props.handleEdit && props.handleEdit(post)
+                        }
+                        handleDelete={() =>
+                            props.handleDelete && props.handleDelete(post)
+                        }
+                    />
                 ))}
             </div>
         </section>

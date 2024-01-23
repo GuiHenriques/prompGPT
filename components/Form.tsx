@@ -58,7 +58,7 @@ const Form = (props: FormProps) => {
                                 tag: e.target.value,
                             })
                         }
-                        placeholder="#tag"
+                        placeholder="tag"
                         required
                         className="form_input"
                     />
