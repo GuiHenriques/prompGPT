@@ -2,19 +2,26 @@
 
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 
 import Post from "@/types/post";
 
 interface PromptCardProps {
-    post: Post
+    post: Post;
     handleTagClick?: (tag: string) => void;
     handleEdit?: () => void;
-    handleDelete?: () => void;    
+    handleDelete?: () => void;
 }
 
-const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }: PromptCardProps) => {
+const PromptCard = ({
+    post,
+    handleTagClick,
+    handleEdit,
+    handleDelete,
+}: PromptCardProps) => {
     const { data: session } = useSession();
+    const pathName = usePathname();
     const [copied, setCopied] = useState(false);
     const handleCopy = () => {
         setCopied(true);
@@ -26,7 +33,7 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }: PromptCa
             <div className="flex justify-between items-start gap-5">
                 <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer">
                     <Image
-                        src={post.creator.image }
+                        src={post.creator.image}
                         alt="user_image"
                         width={40}
                         height={40}
@@ -60,6 +67,23 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }: PromptCa
             >
                 {post.tag}
             </p>
+            {session?.user.id === post.creator._id &&
+                pathName === "/profile" && (
+                    <div className="flex-center mt-5 gap-4 border-t border-gray-200 pt-3">
+                        <p
+                            className="font-inter text-sm text-blue-500 font-light cursor-pointer"
+                            onClick={handleEdit}
+                        >
+                            Edit
+                        </p>
+                        <p
+                            className="font-inter text-sm text-blue-500 font-light cursor-pointer"
+                            onClick={handleDelete}
+                        >
+                            Delete
+                        </p>
+                    </div>
+                )}
         </div>
     );
 };

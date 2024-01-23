@@ -10,8 +10,6 @@ interface ProfileProps {
 }
 
 const Profile = (props: ProfileProps) => {
-    const handleEdit = (post: { prompt: string; tag: string }) => {};
-    
     return (
         <section className="w-full">
             <h1 className="head_text text-left">
