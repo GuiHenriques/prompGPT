@@ -1,8 +1,7 @@
 import { connectToDB } from "@/utils/database";
-import { NextResponse } from "next/server";
 import Prompt from "@/models/prompt";
 
-export async function GET( response: NextResponse) {
+export async function GET( request: Response) {
     try {
         await connectToDB();
         const prompts = await Prompt.find({}).populate("creator");

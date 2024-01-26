@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PromptCard from "./PromptCard";
 import Post from "@/types/post";
 
@@ -24,9 +24,41 @@ const PromptCardList = ({ posts, handleTagClick }: PromptCardListProps) => {
 };
 
 const Feed = () => {
-    const [searchText, setSearchText] = useState("");
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {};
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState<Post[]>([]);
+
+    // search states
+    const [searchText, setSearchText] = useState<string>("");
+    const [searchedResults, setSearchedResults] = useState<Post[]>([]);
+    const [searchTimeout, setSearchTimeout] = useState<
+        NodeJS.Timeout | undefined
+    >();
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        clearTimeout(searchTimeout);
+        setSearchText(e.target.value);
+
+        setSearchTimeout(
+            setTimeout(() => {
+                const searchResult = filterPosts(e.target.value);
+                setSearchedResults(searchResult);
+            }, 500)
+        );
+    };
+
+    const handleTagClick = (tag: string) => {
+        setSearchText(tag);
+        const searchResult = filterPosts(tag);
+        setSearchedResults(searchResult);
+    };
+
+    const filterPosts = (text: string) => {
+        return posts.filter(
+            (post: Post) =>
+                post.prompt.includes(text) ||
+                post.tag.includes(text) ||
+                post.creator.username.includes(text)
+        );
+    };
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -39,17 +71,24 @@ const Feed = () => {
 
     return (
         <section className="feed">
-            <form className="relateive w-full flex-center">
+            <form
+                className="relateive w-full flex-center"
+                onSubmit={(e) => e.preventDefault()}
+            >
                 <input
                     type="text"
-                    placeholder="Search for prompts, usernames or tags"
                     value={searchText}
                     onChange={handleSearchChange}
                     required
-                    className="search_input peer"
+                    placeholder="Search for prompts, usernames or tags"
+                    className="search_input"
                 />
             </form>
-            <PromptCardList posts={posts} handleTagClick={() => {}} />
+            <button type="button" value={searchText} />
+            <PromptCardList
+                posts={searchText ? searchedResults : posts}
+                handleTagClick={handleTagClick}
+            />
         </section>
     );
 };
