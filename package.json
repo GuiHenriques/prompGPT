@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "git-filter-repo": "^0.0.30",
     "mongodb": "^6.3.0",
     "mongoose": "^8.0.4",
     "next": "14.0.4",
